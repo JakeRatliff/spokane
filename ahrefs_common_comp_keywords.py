@@ -134,14 +134,14 @@ filtered_comp_data_CLIENT_ALSO_RANKS = count_kw_competitors_UNIQUE(filtered_comp
 #this next thing may take a very long time...
 filtered_comp_data_CLIENT_DOES_NOT_RANK = count_kw_competitors_UNIQUE(filtered_comp_data_CLIENT_DOES_NOT_RANK)
 
-headers = ['Competitor', 'Keyword',	'Position',	'MSV',	'URL', 'KD', 'Traff (desc)', 'CPC', 'Count of Comp in Top '+str(ranking_filter)]
+#headers = ['Competitor', 'Keyword',	'Position',	'MSV',	'URL', 'KD', 'Traff (desc)', 'CPC', 'Count of Comp in Top '+str(ranking_filter)]
 
 delcols = [3,4,10,11,12]
 filtered_comp_data_CLIENT_ALSO_RANKS = delete_cols(filtered_comp_data_CLIENT_ALSO_RANKS,delcols,14)
 filtered_comp_data_CLIENT_DOES_NOT_RANK = delete_cols(filtered_comp_data_CLIENT_DOES_NOT_RANK,delcols,14)
 
-filtered_comp_data_CLIENT_ALSO_RANKS[0] = headers
-filtered_comp_data_CLIENT_DOES_NOT_RANK[0] = headers
+#filtered_comp_data_CLIENT_ALSO_RANKS[0] = headers
+#filtered_comp_data_CLIENT_DOES_NOT_RANK[0] = headers
 
 
 #find client rank to compare to comps in client also ranks...
@@ -154,7 +154,9 @@ for row in filtered_comp_data_CLIENT_ALSO_RANKS:
 				row.append(term[1])
 				break
 
-filtered_comp_data_CLIENT_ALSO_RANKS[0][-1] = "Client Rank"
+#column headers
+filtered_comp_data_CLIENT_ALSO_RANKS[0] = ['Competitor', 'Keyword',	'Position',	'MSV',	'URL', 'KD', 'Traff (desc)', 'CPC', 'Count of Comp in Top '+str(ranking_filter), "Client Rank"]
+filtered_comp_data_CLIENT_DOES_NOT_RANK[0] = ['Competitor', 'Keyword',	'Position',	'MSV',	'URL', 'KD', 'Traff (desc)', 'CPC', 'Count of Comp in Top '+str(ranking_filter)]
 
 CSV_actions.makeCSV_from_list_of_lists('comp_kws_client_also_ranks.csv', filtered_comp_data_CLIENT_ALSO_RANKS)
 CSV_actions.makeCSV_from_list_of_lists('comp_kws_client_does_not_rank.csv', filtered_comp_data_CLIENT_DOES_NOT_RANK)
