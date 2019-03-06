@@ -2,9 +2,11 @@ import os
 import CSV_actions
 cwd  = os.getcwd()
 #download the ahrefs competitor kewyords as UTF-16, and place them in this folder:
-path = os.path.join(cwd, "/competitor_keywords")
+path = os.path.join(cwd, "competitor_keywords")
+print(path)
 #download the ahrefs client kewyords as UTF-16, and place them in this folder:
-path_2 = os.path.join(cwd, "/client_keywords")
+path_2 = os.path.join(cwd, "client_keywords")
+print(path_2)
 # get headers from first file
 #first_file = os.listdir(path)[0]
 #first_file_data = CSV_actions.getFromCSV(path+'/'+first_file)
@@ -67,13 +69,18 @@ def delete_cols(arry, cols, row_len):
 
 #get client kws
 source_data_CLIENT = []
-client_kws = os.listdir(path_2)[0]
+client_kws = os.listdir(path_2)[1]
 client_kws = CSV_actions.getFromCSV_UTF16(path_2+'/'+client_kws)
 parsed_client_kws = parse_ahrefs_data(client_kws)
 
 client_ranking_terms = []
+client_ranking_terms_lookup = []
 for row in parsed_client_kws:
-	client_ranking_terms.append(row[1])
+	if len(row) == 13:
+		kw = row[1]
+		pos = row[2]
+		client_ranking_terms.append(kw)
+		client_ranking_terms_lookup.append([kw,pos])
 
 source_data_COMP = []
 for file in os.listdir(path):
@@ -125,26 +132,30 @@ filtered_comp_data_CLIENT_DOES_NOT_RANK.insert(0, headers)
 
 filtered_comp_data_CLIENT_ALSO_RANKS = count_kw_competitors_UNIQUE(filtered_comp_data_CLIENT_ALSO_RANKS)
 #this next thing may take a very long time...
-#filtered_comp_data_CLIENT_DOES_NOT_RANK = count_kw_competitors_UNIQUE(filtered_comp_data_CLIENT_DOES_NOT_RANK)
+filtered_comp_data_CLIENT_DOES_NOT_RANK = count_kw_competitors_UNIQUE(filtered_comp_data_CLIENT_DOES_NOT_RANK)
 
-#get client's ranking for comparison to competitors
-'''
-index = 0
-for row in filtered_comp_data_CLIENT_ALSO_RANKS:
-	prin
+headers = ['Competitor', 'Keyword',	'Position',	'MSV',	'URL', 'KD', 'Traff (desc)', 'CPC', 'Count of Comp in Top '+str(ranking_filter)]
 
-parsed_client_kws
-'''
-
-#delete unused columns
 delcols = [3,4,10,11,12]
 filtered_comp_data_CLIENT_ALSO_RANKS = delete_cols(filtered_comp_data_CLIENT_ALSO_RANKS,delcols,14)
-filtered_comp_data_CLIENT_DOES_NOT_RANK = delete_cols(filtered_comp_data_CLIENT_DOES_NOT_RANK,delcols,13)
+filtered_comp_data_CLIENT_DOES_NOT_RANK = delete_cols(filtered_comp_data_CLIENT_DOES_NOT_RANK,delcols,14)
+
+filtered_comp_data_CLIENT_ALSO_RANKS[0] = headers
+filtered_comp_data_CLIENT_DOES_NOT_RANK[0] = headers
+
+#find client rank to compare to comps in client also ranks....
+for row in filtered_comp_data_CLIENT_ALSO_RANKS:
+	keyword = row[1]
+	for row_ in client_ranking_terms:
+		if keyword == row_[1]:
+			for row__ in client_ranking_terms_lookup:
+				client_position = row__[2]
+				row.append(client_position)
+
+filtered_comp_data_CLIENT_ALSO_RANKS[0].append("Client Rank")
 
 CSV_actions.makeCSV_from_list_of_lists('comp_kws_client_also_ranks.csv', filtered_comp_data_CLIENT_ALSO_RANKS)
 CSV_actions.makeCSV_from_list_of_lists('comp_kws_client_does_not_rank.csv', filtered_comp_data_CLIENT_DOES_NOT_RANK)
-
-
 
 
 
