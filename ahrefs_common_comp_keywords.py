@@ -107,10 +107,10 @@ filtered_comp_data_CLIENT_DOES_NOT_RANK = []
 #...sep into list of client ranking also and client not ranking
 #...to be used for further research
 
-index = 1
+#index = 1
 for row in parsed_competitor_terms:
-	if index == 1:
-		headers = row
+	#if index == 1:
+	#	headers = row
 	if len(row) == 13:
 		if row[0] != "#":
 			if int(row[5]) >= volume_filter:
@@ -125,10 +125,10 @@ for row in parsed_competitor_terms:
 								filtered_comp_data_CLIENT_ALSO_RANKS.append(row)
 							else:
 								filtered_comp_data_CLIENT_DOES_NOT_RANK.append(row)
-	index = index+1
-headers[0] = "Competitor"
-filtered_comp_data_CLIENT_ALSO_RANKS.insert(0, headers)
-filtered_comp_data_CLIENT_DOES_NOT_RANK.insert(0, headers)
+	#index = index+1
+#headers[0] = "Competitor"
+#filtered_comp_data_CLIENT_ALSO_RANKS.insert(0, headers)
+#filtered_comp_data_CLIENT_DOES_NOT_RANK.insert(0, headers)
 
 filtered_comp_data_CLIENT_ALSO_RANKS = count_kw_competitors_UNIQUE(filtered_comp_data_CLIENT_ALSO_RANKS)
 #this next thing may take a very long time...
@@ -143,16 +143,18 @@ filtered_comp_data_CLIENT_DOES_NOT_RANK = delete_cols(filtered_comp_data_CLIENT_
 filtered_comp_data_CLIENT_ALSO_RANKS[0] = headers
 filtered_comp_data_CLIENT_DOES_NOT_RANK[0] = headers
 
-#find client rank to compare to comps in client also ranks....
+
+#find client rank to compare to comps in client also ranks...
 for row in filtered_comp_data_CLIENT_ALSO_RANKS:
 	keyword = row[1]
-	for row_ in client_ranking_terms:
-		if keyword == row_[1]:
-			for row__ in client_ranking_terms_lookup:
-				client_position = row__[2]
-				row.append(client_position)
+	print(keyword)
+	if keyword in client_ranking_terms:
+		for term in client_ranking_terms_lookup:
+			if term[0] == keyword:
+				row.append(term[1])
+				break
 
-filtered_comp_data_CLIENT_ALSO_RANKS[0].append("Client Rank")
+filtered_comp_data_CLIENT_ALSO_RANKS[0][-1] = "Client Rank"
 
 CSV_actions.makeCSV_from_list_of_lists('comp_kws_client_also_ranks.csv', filtered_comp_data_CLIENT_ALSO_RANKS)
 CSV_actions.makeCSV_from_list_of_lists('comp_kws_client_does_not_rank.csv', filtered_comp_data_CLIENT_DOES_NOT_RANK)
