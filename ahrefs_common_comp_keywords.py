@@ -36,11 +36,11 @@ def count_kw_competitors_UNIQUE(kw_list):
 	for row in kw_list:
 		new_list.append(row)
 	for row in new_list:
-		if index == 0:
-			heading = "Count of Competitors Ranking in Top " + str(ranking_filter)
-			row.append(heading)
-			index = index+1
-			continue
+		#if index == 0:
+		#	heading = "Count of Competitors Ranking in Top " + str(ranking_filter)
+		#	row.append(heading)
+		#	index = index+1
+		#	continue
 		keyword = row[1]
 		print(keyword)
 		competitors_ranking = []
@@ -155,8 +155,11 @@ for row in filtered_comp_data_CLIENT_ALSO_RANKS:
 				break
 
 #column headers
-filtered_comp_data_CLIENT_ALSO_RANKS[0] = ['Competitor', 'Keyword',	'Position',	'MSV',	'URL', 'KD', 'Traff (desc)', 'CPC', 'Count of Comp in Top '+str(ranking_filter), "Client Rank"]
-filtered_comp_data_CLIENT_DOES_NOT_RANK[0] = ['Competitor', 'Keyword',	'Position',	'MSV',	'URL', 'KD', 'Traff (desc)', 'CPC', 'Count of Comp in Top '+str(ranking_filter)]
+
+
+
+filtered_comp_data_CLIENT_ALSO_RANKS.insert(0,['Competitor', 'Keyword',	'Position',	'MSV',	'URL', 'KD', 'Traff (desc)', 'CPC', 'Count of Comp in Top '+str(ranking_filter), "Client Rank"])
+filtered_comp_data_CLIENT_DOES_NOT_RANK.insert(0,['Competitor', 'Keyword',	'Position',	'MSV',	'URL', 'KD', 'Traff (desc)', 'CPC', 'Count of Comp in Top '+str(ranking_filter)])
 
 CSV_actions.makeCSV_from_list_of_lists('comp_kws_client_also_ranks.csv', filtered_comp_data_CLIENT_ALSO_RANKS)
 CSV_actions.makeCSV_from_list_of_lists('comp_kws_client_does_not_rank.csv', filtered_comp_data_CLIENT_DOES_NOT_RANK)
