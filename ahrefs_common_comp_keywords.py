@@ -14,7 +14,7 @@ print(path_2)
 #print(headers)
 
 #Change this as needed. Filters rows with volume less than integer
-volume_filter = 50
+volume_filter = 200
 ranking_filter = 10
 
 def parse_ahrefs_data(data):
@@ -69,7 +69,10 @@ def delete_cols(arry, cols, row_len):
 
 #get client kws
 source_data_CLIENT = []
-client_kws = os.listdir(path_2)[1]
+client_kws = os.listdir(path_2)
+for file in client_kws:
+	if file.endswith(".csv"):
+		client_kws = file
 client_kws = CSV_actions.getFromCSV_UTF16(path_2+'/'+client_kws)
 parsed_client_kws = parse_ahrefs_data(client_kws)
 
@@ -81,7 +84,8 @@ for row in parsed_client_kws:
 		pos = row[2]
 		client_ranking_terms.append(kw)
 		client_ranking_terms_lookup.append([kw,pos])
-
+print("client ranking terms length is:")
+print(len(client_ranking_terms))
 source_data_COMP = []
 for file in os.listdir(path):
 	if not file.startswith('.'):
@@ -95,10 +99,11 @@ for file in os.listdir(path):
 
 parsed_competitor_terms = parse_ahrefs_data(source_data_COMP)
 print("parsed comp terms is", len(parsed_competitor_terms), "long.")
-print(parsed_competitor_terms)
+#print(parsed_competitor_terms)
 
 filtered_comp_data_CLIENT_ALSO_RANKS = []
 filtered_comp_data_CLIENT_DOES_NOT_RANK = []
+
 
 #CSV_actions.makeCSV_from_list_of_lists('new_list0.csv', new_data)
 
@@ -122,6 +127,7 @@ for row in parsed_competitor_terms:
 						if int(row[7]) < 30:
 							#separate into two lists based on whether client ranks for the kw
 							if row[1] in client_ranking_terms:
+								print(row)
 								filtered_comp_data_CLIENT_ALSO_RANKS.append(row)
 							else:
 								filtered_comp_data_CLIENT_DOES_NOT_RANK.append(row)
@@ -143,11 +149,10 @@ filtered_comp_data_CLIENT_DOES_NOT_RANK = delete_cols(filtered_comp_data_CLIENT_
 #filtered_comp_data_CLIENT_ALSO_RANKS[0] = headers
 #filtered_comp_data_CLIENT_DOES_NOT_RANK[0] = headers
 
-
 #find client rank to compare to comps in client also ranks...
 for row in filtered_comp_data_CLIENT_ALSO_RANKS:
 	keyword = row[1]
-	print(keyword)
+	#TODO uncomment print(keyword)
 	if keyword in client_ranking_terms:
 		for term in client_ranking_terms_lookup:
 			if term[0] == keyword:
@@ -157,9 +162,9 @@ for row in filtered_comp_data_CLIENT_ALSO_RANKS:
 #column headers
 
 
-
 filtered_comp_data_CLIENT_ALSO_RANKS.insert(0,['Competitor','Keyword','Position','MSV','URL','KD','Traff (desc)','CPC','Count of Comp in Top '+str(ranking_filter),"Client Rank"])
 filtered_comp_data_CLIENT_DOES_NOT_RANK.insert(0,['Competitor','Keyword','Position','MSV','URL','KD','Traff (desc)','CPC','Count of Comp in Top '+str(ranking_filter)])
+
 
 CSV_actions.makeCSV_from_list_of_lists('comp_kws_client_also_ranks.csv', filtered_comp_data_CLIENT_ALSO_RANKS)
 CSV_actions.makeCSV_from_list_of_lists('comp_kws_client_does_not_rank.csv', filtered_comp_data_CLIENT_DOES_NOT_RANK)
