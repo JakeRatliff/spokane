@@ -14,7 +14,7 @@ print(path_2)
 #print(headers)
 
 #Change this as needed. Filters rows with volume less than integer
-volume_filter = 200
+volume_filter = 50
 ranking_filter = 10
 
 def parse_ahrefs_data(data):
