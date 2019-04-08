@@ -13,9 +13,46 @@ print(path_2)
 #headers = first_file_data[0]
 #print(headers)
 
-#Change this as needed. Filters rows with volume less than integer
-volume_filter = 50
-ranking_filter = 10
+print("The goal of this tool is to help SEOs save time and find better keywords. It outputs two CSV files. One is a list for all the terms for which competitors rank for which the client also ranks in any position. The other is a list of the terms for which the client does not rank at all, but competitors do. The number of competitors ranking in the target positon range for each term is also included in the results.")
+print("Use lots of data to get the best results. It may take some time to complete, however. Adjust the filters to improve your run time and results.")
+input("Ready? You can press control+C at anytime to terminate this program. Press any key to continue.")
+#Filters rows with volume less than integer
+def select_filters():
+	adjust_defaults = input("By default, this program filters out competitor keywords with volume less than 50 and keyword difficulty greater than 30. You may want to adjust these in order to get better results. If the client is in a highly competitive space, for example, you may want to set the keyword difficulty filter to the max (100). \nAdjust default filters? Type 'y' or 'n' then press 'enter': ").lower()
+	if adjust_defaults is "y" or "'y'":
+		global volume_filter
+		global ranking_filter
+		global difficulty_filter
+		#Volume
+		volume_filter = input("Volume filter - type the MINIMUM volume of the keywords, then press 'enter'. Type '0' to not filter by volume. Program may take a long time to terminate without a volume filter, setting to at least 10 is recommended. \nType minimum volume here, or press enter to use default: ")
+		if len(volume_filter) is 0:
+			volume_filter = 50
+		else:
+			volume_filter = int(volume_filter)
+		#Difficulty
+		difficulty_filter = input("Difficulty filter - type the MAXIMUM difficulty of the keywords, then press 'enter'. \nType max difficulty here, or press enter to use default: ")
+		if len(difficulty_filter) is 0:
+			difficulty_filter = 30
+		else:
+			difficulty_filter = int(difficulty_filter)
+		#Ranking floor
+		ranking_filter = input("Ranking filter - type the MAXIMUM competitor rank of the keywords, then press 'enter'. Default is 10 in order to collect just the terms for which competitors rank on page 1 of the SERP. \nType max competitor rank here, or press enter to use default: ")
+		if len(ranking_filter) is 0:
+			ranking_filter = 10
+		else:
+			ranking_filter = int(ranking_filter)
+	elif adjust_defaults is "n":
+		print("Keeping defaults.")
+		volume_filter = 50
+		ranking_filter = 10
+		difficulty_filter = 30
+	else:
+		print("\nInput not recognized. Please type either 'y' or 'n'\n")
+		select_filters()
+
+
+select_filters()
+
 
 def parse_ahrefs_data(data):
 	new_data = []
@@ -30,7 +67,7 @@ def parse_ahrefs_data(data):
 
 def count_kw_competitors_UNIQUE(kw_list):
 	new_list = []
-	global ranking_filter
+	#global ranking_filter
 	print('\n\ncounting how many competitors ranking for each keyword in resulting list\n\n')
 	index = 0
 	for row in kw_list:
@@ -124,7 +161,7 @@ for row in parsed_competitor_terms:
 					#filter out pages ranking deep:
 					if int(row[2]) < ranking_filter:
 						#filter out high KD:
-						if int(row[7]) < 30:
+						if int(row[7]) < difficulty_filter:
 							#separate into two lists based on whether client ranks for the kw
 							if row[1] in client_ranking_terms:
 								print(row)
